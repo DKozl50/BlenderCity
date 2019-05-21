@@ -3,6 +3,45 @@ import bpy.ops as o
 import numpy as np
 from mathutils import Vector
 
+#variables
+
+roadlen1 = 30 
+elevationcoef = 10
+arr = np.ones((roadlen1,roadlen1))
+houseconstant = -5
+
+roadwidth1 = 2
+
+MINroadlen2 = 9
+MAXroadlen2 = 15
+roadwidth2 = 1
+roadgap2 = 3 
+roadsection2 = 5
+axialroads2 = 10
+
+MINstartlen3 = 0
+MAXstartlen3 = 6
+MINendlen3 = 8
+MAXendlen3 = 15
+roadwidth3 = 1
+roadgap3 = 3
+roadsection3 = 5
+axialroads3 = 8
+
+roofchance = 3/10
+divcoef = 1.5
+
+radius = 6
+MINdim = 1
+MAXdim = 2.5
+MINheight = 3  #*2
+MAXheight = 10 #*2
+MINvert = 3
+MAXvert = 7
+amount = 9 
+
+
+
 #clears everything
 def objclear():
   for obj in bpy.context.scene.objects:
@@ -36,16 +75,9 @@ objclear()
 
 #base
 bpy.ops.mesh.primitive_torus_add(location = (0,0,0), major_radius=16, minor_radius = 0.5, major_segments = 256)
-
 bpy.ops.mesh.primitive_cone_add(radius1 = 17, radius2 = 16.5, location = (0,0, -1), vertices = 1000)
 
-
-#top
-roadlen1 = 30 # = radius
-elevationcoef = 10
-arr = np.ones((roadlen1,roadlen1))
-houseconstant = -5
-
+#random small houses
 for x in range(roadlen1):
   for y in range(roadlen1):
     arr[x,y] = (x-roadlen1/2)**2 + (y-roadlen1/2)**2
@@ -57,27 +89,16 @@ for x in range(roadlen1):
     arr[x,y] = arrmax - arr[x,y]
     arr[x,y] += houseconstant
 
-print(arr.max())
-print(arr.min())
 
 #roads
-#road1
-roadwidth1 = 2
 
+#road1
 for i in range(roadlen1):
   for w in range(roadwidth1):
     arr[int(roadlen1/2-roadwidth1/2+w), i] = -1
     arr[i, int(roadlen1/2-roadwidth1/2+w)] = -1
 
 #road2
-MINroadlen2 = 9
-MAXroadlen2 = 15
-roadwidth2 = 1
-roadgap2 = 3 #minimum between two centers of collinear roads
-roadsection2 = 5 #multiplied by roadgap2 is maximum distance from center
-axialroads2 = 10 #amount of roads on an axis
-
-
 for i in range(axialroads2):
   end = np.random.randint(MINroadlen2, MAXroadlen2)
   if(np.random.rand()-0.5<0):
@@ -106,15 +127,6 @@ for i in range(axialroads2):
     arr[x, int(perpcoord)] = -1
 
 #road3
-MINstartlen3 = 0
-MAXstartlen3 = 6
-MINendlen3 = 8
-MAXendlen3 = 15
-roadwidth3 = 1
-roadgap3 = 3
-roadsection3 = 5
-axialroads3 = 8
-
 for i in range(axialroads3):
   start = np.random.randint(MINstartlen3, MAXstartlen3)
   end = np.random.randint(MINendlen3, MAXendlen3)
@@ -149,11 +161,6 @@ for i in range(axialroads3):
     arr[int(perpcoord), y] = -1
 
 #citylow
-
-roofchance = 3/10
-#divercity = 5
-divcoef = 1.5
-
 for i in range (roadlen1):
   for n in range (roadlen1):
     if (arr[i,n]!=-1) & ((i-roadlen1/2)**2+(n-roadlen1/2)**2+1<(roadlen1/2)**2):
@@ -168,15 +175,6 @@ for i in range (roadlen1):
             ob.rotation_euler =(np.pi/2, 0, np.random.randint(2)*np.pi/2)
 
 #random skyscrapers
-radius = 6
-MINdim = 1
-MAXdim = 2.5
-MINheight = 3  #*2
-MAXheight = 10 #*2
-MINvert = 3
-MAXvert = 7
-amount = 9 
-
 meandim = (MINdim+MAXdim)/2
 deltadim = meandim-MINdim
 meanheight = (MINheight+MAXheight)/2
