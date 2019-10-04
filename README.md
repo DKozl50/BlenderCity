@@ -1,5 +1,5 @@
 # BlenderCity
-A small random generator of city models in Bledner via bpy
+A small random generator of city models in Blender via bpy
 
 The code generates a city (lots of resized cubes) such that small buildings "grow" towards the center and the skyscrapers just spawn randomly in the middle
 
